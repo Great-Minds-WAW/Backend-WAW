@@ -17,4 +17,7 @@ public class MappingConfiguration {
     @Bean
     public UserProjectMapper userProjectMapper(){return new UserProjectMapper();}
 
+    @Bean
+    public UserMapper userMapper(){return new UserMapper();}
+
 }

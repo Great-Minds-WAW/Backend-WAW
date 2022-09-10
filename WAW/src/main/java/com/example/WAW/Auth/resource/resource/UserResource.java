@@ -3,13 +3,9 @@ package com.example.WAW.Auth.resource.resource;
 import lombok.*;
 
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
-@With
-@NoArgsConstructor
-@AllArgsConstructor
 public class UserResource {
     private Long id;
     private String fullName;

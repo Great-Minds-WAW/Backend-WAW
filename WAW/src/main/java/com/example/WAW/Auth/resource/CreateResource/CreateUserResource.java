@@ -1,50 +1,40 @@
-package com.example.WAW.Auth.domain.model.entity;
+package com.example.WAW.Auth.resource.CreateResource;
 
-import com.example.WAW.shared.domain.model.AuditModel;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-
 @Getter
 @Setter
-@With
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@Table(name = "users")
-public class User extends AuditModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class CreateUserResource {
     private Long id;
 
     @NotNull
-    @NotBlank
     private String fullName;
+
     @NotNull
-    @NotBlank
     private String username;
+
     @NotNull
-    @NotBlank
-    @Email
     private String email;
+
     @NotNull
-    @NotBlank
     private String location;
+
     @NotNull
     private Integer profileViews;
+
     @NotNull
-    @NotBlank
     private String biography;
+
     @NotNull
-    @NotBlank
     private String about;
+
     @NotNull
     private Date birthdate;
+
     @NotNull
-    @NotBlank
     private String password;
 }
