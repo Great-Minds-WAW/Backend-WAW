@@ -8,6 +8,7 @@ import java.util.List;
 public interface PetitionService {
     List<Petition> getAll();
     Petition getById(Long id);
+    Petition getByOfferIdAndUserId(Long userId, Long offerId);
     Petition create(Long userId, Long offerId ,Petition request);
     Petition update(Long id, Petition request);
     ResponseEntity<?> delete(Long id);

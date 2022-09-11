@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PetitionRepository extends JpaRepository<Petition, Long> {
-
+    Petition findByUserIdAndOfferId(Long userId, Long offerId);
 }

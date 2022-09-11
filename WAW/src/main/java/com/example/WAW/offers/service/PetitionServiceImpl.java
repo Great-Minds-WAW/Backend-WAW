@@ -6,6 +6,7 @@ import com.example.WAW.offers.domain.model.entity.Petition;
 import com.example.WAW.offers.domain.persistence.OfferRepository;
 import com.example.WAW.offers.domain.persistence.PetitionRepository;
 import com.example.WAW.offers.domain.service.PetitionService;
+import com.example.WAW.shared.exception.ResourceAlreadyExistsException;
 import com.example.WAW.shared.exception.ResourceNotFoundException;
 import com.example.WAW.shared.exception.ResourceValidationException;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,11 @@ public class PetitionServiceImpl implements PetitionService {
     }
 
     @Override
+    public Petition getByOfferIdAndUserId(Long userId, Long offerId) {
+        return repository.findByUserIdAndOfferId(userId, offerId);
+    }
+
+    @Override
     public Petition create(Long userId, Long offerId,Petition request) {
         Set<ConstraintViolation<Petition>> violations = validator.validate(request);
 
@@ -54,6 +60,10 @@ public class PetitionServiceImpl implements PetitionService {
             request.setUser(user);
             return offerRepository.findById(offerId).map(offer -> {
                 request.setOffer(offer);
+
+                if(getByOfferIdAndUserId(userId, offerId) != null)
+                    throw  new ResourceAlreadyExistsException("This Petition Already Exist");
+
                 return repository.save(request);
             }).orElseThrow(()->new ResourceNotFoundException("Offer", offerId));
         }).orElseThrow(()-> new ResourceNotFoundException("User", userId));
