@@ -11,4 +11,5 @@ public class UserEducationResource {
     private String description;
     private Integer startYear;
     private Integer endYear;
+    private Long userId;
 }

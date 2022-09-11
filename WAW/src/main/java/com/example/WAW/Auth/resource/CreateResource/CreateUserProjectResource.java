@@ -20,4 +20,7 @@ public class CreateUserProjectResource {
     @NotNull
     private Date date;
 
+    @NotNull
+    private Long userId;
+
 }

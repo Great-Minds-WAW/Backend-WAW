@@ -10,7 +10,7 @@ public interface UserEducationService {
 
     List<UserEducation> getAll();
     UserEducation getById(Long id);
-    UserEducation create(UserEducation request);
+    UserEducation create(Long userId,UserEducation request);
     UserEducation update(Long id, UserEducation request);
     ResponseEntity<?> delete(Long id);
 }

@@ -38,7 +38,8 @@ public class UserEducationController {
 
     @PostMapping
     public UserEducationResource create(@RequestBody CreateUserEducationResource request) {
-        return mapper.toResource(service.create(mapper.toModel(request)));
+        Long userId = request.getUserId();
+        return mapper.toResource(service.create(userId ,mapper.toModel(request)));
     }
 
     @PutMapping("{Id}")

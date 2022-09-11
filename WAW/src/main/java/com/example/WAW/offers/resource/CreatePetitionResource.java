@@ -1,4 +1,4 @@
-package com.example.WAW.Chat.resource;
+package com.example.WAW.offers.resource;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,15 +7,16 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class CreateMessageResource {
+public class CreatePetitionResource {
+
     private Long id;
 
     @NotNull
-    private String content;
+    private String status;
+
+    @NotNull
+    private Long offerId;
 
     @NotNull
     private Long userId;
-
-    @NotNull
-    private Long chatRoomId;
 }

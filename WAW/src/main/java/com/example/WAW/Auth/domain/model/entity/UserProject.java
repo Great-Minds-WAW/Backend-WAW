@@ -32,4 +32,8 @@ public class UserProject extends AuditModel {
     @NotNull
     private Date date;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = true)
+    private User user;
+
 }

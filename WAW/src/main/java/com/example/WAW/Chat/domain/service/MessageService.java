@@ -9,7 +9,7 @@ public interface MessageService {
 
     List<Message> getAll();
     Message getById(Long id);
-    Message create(Message resource);
+    Message create(Long userId, Long chatRoomId,Message resource);
     Message update(Long id, Message resource);
     ResponseEntity<?> delete(Long id);
 }

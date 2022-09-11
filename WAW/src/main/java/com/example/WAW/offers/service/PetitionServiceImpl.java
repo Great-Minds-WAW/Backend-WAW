@@ -1,11 +1,11 @@
-package com.example.WAW.Chat.service;
+package com.example.WAW.offers.service;
 
-import com.example.WAW.Auth.domain.model.entity.User;
+
 import com.example.WAW.Auth.domain.persistence.UserRepository;
-import com.example.WAW.Chat.domain.model.entity.Message;
-import com.example.WAW.Chat.domain.persistence.ChatRoomRepository;
-import com.example.WAW.Chat.domain.persistence.MessageRepository;
-import com.example.WAW.Chat.domain.service.MessageService;
+import com.example.WAW.offers.domain.model.entity.Petition;
+import com.example.WAW.offers.domain.persistence.OfferRepository;
+import com.example.WAW.offers.domain.persistence.PetitionRepository;
+import com.example.WAW.offers.domain.service.PetitionService;
 import com.example.WAW.shared.exception.ResourceNotFoundException;
 import com.example.WAW.shared.exception.ResourceValidationException;
 import org.springframework.http.ResponseEntity;
@@ -17,59 +17,59 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class MessageServiceImpl implements MessageService {
+public class PetitionServiceImpl implements PetitionService {
 
-    private static final String ENTITY="Message";
-    private final MessageRepository repository;
+    private static final String ENTITY="Petition";
+    private final PetitionRepository repository;
     private final UserRepository userRepository;
-    private final ChatRoomRepository chatRoomRepository;
+    private final OfferRepository offerRepository;
     private final Validator validator;
 
-    public MessageServiceImpl(MessageRepository repository, UserRepository userRepository, ChatRoomRepository chatRoomRepository, Validator validator) {
+    public PetitionServiceImpl(PetitionRepository repository, UserRepository userRepository, OfferRepository offerRepository, Validator validator) {
         this.repository = repository;
         this.userRepository = userRepository;
-        this.chatRoomRepository = chatRoomRepository;
+        this.offerRepository = offerRepository;
         this.validator = validator;
     }
 
     @Override
-    public List<Message> getAll() {
+    public List<Petition> getAll() {
         return repository.findAll();
     }
 
     @Override
-    public Message getById(Long id) {
+    public Petition getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException(ENTITY, id));
     }
 
     @Override
-    public Message create(Long userId, Long chatRoomId,Message request) {
-        Set<ConstraintViolation<Message>> violations = validator.validate(request);
+    public Petition create(Long userId, Long offerId,Petition request) {
+        Set<ConstraintViolation<Petition>> violations = validator.validate(request);
 
         if (!violations.isEmpty())
             throw new ResourceValidationException(ENTITY, violations);
 
         return userRepository.findById(userId).map(user -> {
             request.setUser(user);
-            return chatRoomRepository.findById(chatRoomId).map(chatRoom -> {
-                request.setChatRoom(chatRoom);
+            return offerRepository.findById(offerId).map(offer -> {
+                request.setOffer(offer);
                 return repository.save(request);
-            }).orElseThrow(()->new ResourceNotFoundException("ChatRoom", chatRoomId));
-        }).orElseThrow(()->new ResourceNotFoundException("User", userId));
+            }).orElseThrow(()->new ResourceNotFoundException("Offer", offerId));
+        }).orElseThrow(()-> new ResourceNotFoundException("User", userId));
     }
 
     @Override
-    public Message update(Long id, Message request) {
-        Set<ConstraintViolation<Message>> violations = validator.validate(request);
+    public Petition update(Long id, Petition request) {
+        Set<ConstraintViolation<Petition>> violations = validator.validate(request);
         if (!violations.isEmpty())
             throw new ResourceValidationException(ENTITY, violations);
         if (!repository.existsById(id))
             throw new ResourceNotFoundException(ENTITY, id);
 
         return repository.findById(id).map(
-                message -> repository.save(message
-                        .withContent(request.getContent())
+                petition -> repository.save(petition
+                        .withStatus(request.getStatus())
                 )).orElseThrow(
                 ()->new ResourceNotFoundException(ENTITY, id)
         );
@@ -78,8 +78,8 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public ResponseEntity<?> delete(Long id) {
         return repository.findById(id).map(
-                        message -> {
-                            repository.delete(message);
+                        petition -> {
+                            repository.delete(petition);
                             return ResponseEntity.ok().build();
                         })
                 .orElseThrow(() -> new ResourceNotFoundException(ENTITY, id));

@@ -1,5 +1,6 @@
 package com.example.WAW.Company.domain.model.entity;
 
+import com.example.WAW.offers.domain.model.entity.Offer;
 import com.example.WAW.shared.domain.model.AuditModel;
 import lombok.*;
 
@@ -7,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,4 +34,7 @@ public class Company extends AuditModel {
     @NotBlank
     @Email
     private String email;
+
+    @OneToMany
+    private List<Offer> offers;
 }

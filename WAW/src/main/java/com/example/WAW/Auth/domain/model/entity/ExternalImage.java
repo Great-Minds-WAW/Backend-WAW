@@ -27,4 +27,7 @@ public class ExternalImage extends AuditModel {
     @NotBlank
     private  String alt;
 
+    @OneToOne(mappedBy = "image")
+    private UserEducation userEducation;
+
 }

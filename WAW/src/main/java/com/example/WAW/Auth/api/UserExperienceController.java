@@ -38,7 +38,7 @@ public class UserExperienceController {
 
     @PostMapping
     public UserExperienceResource create(@RequestBody CreateUserExperienceResource request) {
-        return mapper.toResource(service.create(mapper.toModel(request)));
+        return mapper.toResource(service.create(request.getUserId(),mapper.toModel(request)));
     }
 
     @PutMapping("{Id}")

@@ -8,7 +8,7 @@ import java.util.List;
 public interface ChatRoomService {
     List<ChatRoom> getAll();
     ChatRoom getById(Long id);
-    ChatRoom create(ChatRoom resource);
+    ChatRoom create(Long userId,ChatRoom resource);
     //ChatRoom update(Long id, ChatRoom resource);
     ResponseEntity<?> delete(Long id);
 }

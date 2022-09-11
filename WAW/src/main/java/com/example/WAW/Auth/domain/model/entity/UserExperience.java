@@ -43,4 +43,7 @@ public class UserExperience extends AuditModel {
     @NotBlank
     private String description;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = true)
+    private User user;
 }

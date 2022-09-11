@@ -21,4 +21,7 @@ public class CreateUserEducationResource {
 
     @NotNull
     private Integer endYear;
+
+    @NotNull
+    private Long userId;
 }

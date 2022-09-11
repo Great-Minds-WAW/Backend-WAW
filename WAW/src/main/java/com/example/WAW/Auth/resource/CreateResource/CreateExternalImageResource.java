@@ -17,4 +17,7 @@ public class CreateExternalImageResource {
 
     @NotNull
     private String alt;
+
+    @NotNull
+    private Long userId;
 }

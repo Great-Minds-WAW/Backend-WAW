@@ -1,5 +1,6 @@
 package com.example.WAW.Chat.service;
 
+import com.example.WAW.Auth.domain.persistence.UserRepository;
 import com.example.WAW.Chat.domain.model.entity.ChatRoom;
 import com.example.WAW.Chat.domain.persistence.ChatRoomRepository;
 import com.example.WAW.Chat.domain.service.ChatRoomService;
@@ -18,10 +19,12 @@ public class ChatRoomImpl implements ChatRoomService {
 
     private static final String ENTITY="ChatRoom";
     private final ChatRoomRepository repository;
+    private final UserRepository userRepository;
     private final Validator validator;
 
-    public ChatRoomImpl(ChatRoomRepository repository, Validator validator) {
+    public ChatRoomImpl(ChatRoomRepository repository, UserRepository userRepository, Validator validator) {
         this.repository = repository;
+        this.userRepository = userRepository;
         this.validator = validator;
     }
 
@@ -37,13 +40,16 @@ public class ChatRoomImpl implements ChatRoomService {
     }
 
     @Override
-    public ChatRoom create(ChatRoom request) {
+    public ChatRoom create(Long userId ,ChatRoom request) {
         Set<ConstraintViolation<ChatRoom>> violations = validator.validate(request);
 
         if (!violations.isEmpty())
             throw new ResourceValidationException(ENTITY, violations);
 
-        return repository.save(request);
+        return userRepository.findById(userId).map(user -> {
+            request.setUser(user);
+            return repository.save(request);
+        }).orElseThrow(()->new ResourceNotFoundException("user", userId));
     }
 
     @Override

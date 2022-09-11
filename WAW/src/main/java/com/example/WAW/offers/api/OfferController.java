@@ -37,7 +37,8 @@ public class OfferController {
 
     @PostMapping
     public OfferResource create(@RequestBody CreateOfferResource request) {
-        return mapper.toResource(offerService.create(mapper.toModel(request)));
+        Long companyId= request.getCompanyId();
+        return mapper.toResource(offerService.create(companyId,mapper.toModel(request)));
     }
 
     @PutMapping("{Id}")

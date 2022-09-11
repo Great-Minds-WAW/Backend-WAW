@@ -11,4 +11,6 @@ public class MessageResource {
     private Long id;
     private String content;
     private Date createdAt;
+    private Long userId;
+    private Long chatRoomId;
 }

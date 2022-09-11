@@ -2,6 +2,7 @@ package com.example.WAW.Auth.service;
 
 import com.example.WAW.Auth.domain.model.entity.UserEducation;
 import com.example.WAW.Auth.domain.persistence.UserEducationRepository;
+import com.example.WAW.Auth.domain.persistence.UserRepository;
 import com.example.WAW.Auth.domain.service.UserEducationService;
 import com.example.WAW.shared.exception.ResourceNotFoundException;
 import com.example.WAW.shared.exception.ResourceValidationException;
@@ -18,10 +19,12 @@ public class UserEducationServiceImpl implements UserEducationService {
 
     private static final String ENTITY="UserEducation";
     private final UserEducationRepository repository;
+    private final UserRepository userRepository;
     private final Validator validator;
 
-    public UserEducationServiceImpl(UserEducationRepository repository, Validator validator) {
+    public UserEducationServiceImpl(UserEducationRepository repository, UserRepository userRepository, Validator validator) {
         this.repository = repository;
+        this.userRepository = userRepository;
         this.validator = validator;
     }
 
@@ -37,13 +40,16 @@ public class UserEducationServiceImpl implements UserEducationService {
     }
 
     @Override
-    public UserEducation create(UserEducation request) {
+    public UserEducation create(Long userId,UserEducation request) {
         Set<ConstraintViolation<UserEducation>> violations = validator.validate(request);
 
         if (!violations.isEmpty())
             throw new ResourceValidationException(ENTITY, violations);
 
-        return repository.save(request);
+        return userRepository.findById(userId).map(user -> {
+            request.setUser(user);
+            return repository.save(request);
+        }).orElseThrow(()->new ResourceNotFoundException("User", userId));
     }
 
     @Override

@@ -1,12 +1,13 @@
 package com.example.WAW.offers.domain.model.entity;
 
+import com.example.WAW.Company.domain.model.entity.Company;
 import com.example.WAW.shared.domain.model.AuditModel;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.util.List;
 
 @Getter
 @Setter
@@ -37,4 +38,11 @@ public class Offer extends AuditModel {
 
     @NotNull
     private Boolean status;
+
+    @OneToMany
+    private List<Petition> petitions;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "company_id", nullable = true)
+    private Company company;
 }

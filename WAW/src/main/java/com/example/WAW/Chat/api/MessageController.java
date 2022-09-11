@@ -38,7 +38,9 @@ public class MessageController {
 
     @PostMapping
     public MessageResource create(@RequestBody CreateMessageResource request) {
-        return mapper.toResource(service.create(mapper.toModel(request)));
+        Long userId = request.getUserId();
+        Long chatRoomId = request.getChatRoomId();
+        return mapper.toResource(service.create(userId, chatRoomId,mapper.toModel(request)));
     }
 
     @PutMapping("{Id}")

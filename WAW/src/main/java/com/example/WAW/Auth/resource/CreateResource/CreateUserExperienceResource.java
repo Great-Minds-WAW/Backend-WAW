@@ -28,4 +28,7 @@ public class CreateUserExperienceResource {
 
     @NotNull
     private String description;
+
+    @NotNull
+    private Long userId;
 }

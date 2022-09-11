@@ -9,7 +9,7 @@ public interface UserProjectService {
 
     List<UserProject> getAll();
     UserProject getById(Long id);
-    UserProject create(UserProject request);
+    UserProject create(Long userId, UserProject request);
     UserProject update(Long id, UserProject request);
     ResponseEntity<?> delete(Long id);
 }

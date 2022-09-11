@@ -38,7 +38,8 @@ public class ChatRoomController {
 
     @PostMapping
     public ChatRoomResource create(@RequestBody CreateChatRoomResource request) {
-        return mapper.toResource(service.create(mapper.toModel(request)));
+        Long userId = request.getUserId();
+        return mapper.toResource(service.create(userId, mapper.toModel(request)));
     }
 
     @DeleteMapping("{Id}")

@@ -34,4 +34,14 @@ public class UserEducation extends AuditModel {
 
     @NotNull
     private Integer endYear;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = true)
+    private User user;
+
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    private ExternalImage image;
+
+
 }

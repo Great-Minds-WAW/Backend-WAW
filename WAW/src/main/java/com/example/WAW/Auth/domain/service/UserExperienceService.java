@@ -9,7 +9,7 @@ import java.util.List;
 public interface UserExperienceService {
     List<UserExperience> getAll();
     UserExperience getById(Long id);
-    UserExperience create(UserExperience request);
+    UserExperience create(Long userId, UserExperience request);
     UserExperience update(Long id, UserExperience request);
     ResponseEntity<?> delete(Long id);
 }

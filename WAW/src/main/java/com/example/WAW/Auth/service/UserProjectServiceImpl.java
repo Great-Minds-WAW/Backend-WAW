@@ -2,6 +2,7 @@ package com.example.WAW.Auth.service;
 
 import com.example.WAW.Auth.domain.model.entity.UserProject;
 import com.example.WAW.Auth.domain.persistence.UserProjectRepository;
+import com.example.WAW.Auth.domain.persistence.UserRepository;
 import com.example.WAW.Auth.domain.service.UserProjectService;
 import com.example.WAW.shared.exception.ResourceNotFoundException;
 import com.example.WAW.shared.exception.ResourceValidationException;
@@ -18,10 +19,12 @@ public class UserProjectServiceImpl implements UserProjectService {
 
     private static final String ENTITY="UserProject";
     private final UserProjectRepository repository;
+    private final UserRepository userRepository;
     private final Validator validator;
 
-    public UserProjectServiceImpl(UserProjectRepository repository, Validator validator) {
+    public UserProjectServiceImpl(UserProjectRepository repository, UserRepository userRepository, Validator validator) {
         this.repository = repository;
+        this.userRepository = userRepository;
         this.validator = validator;
     }
 
@@ -37,13 +40,16 @@ public class UserProjectServiceImpl implements UserProjectService {
     }
 
     @Override
-    public UserProject create(UserProject request) {
+    public UserProject create(Long userId,UserProject request) {
         Set<ConstraintViolation<UserProject>> violations = validator.validate(request);
 
         if (!violations.isEmpty())
             throw new ResourceValidationException(ENTITY, violations);
 
-        return repository.save(request);
+        return userRepository.findById(userId).map(user -> {
+            request.setUser(user);
+            return repository.save(request);
+        }).orElseThrow(()->new ResourceNotFoundException("User", userId));
     }
 
     @Override

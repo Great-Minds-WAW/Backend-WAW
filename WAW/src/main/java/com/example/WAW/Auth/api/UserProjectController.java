@@ -38,7 +38,7 @@ public class UserProjectController {
 
     @PostMapping
     public UserProjectResource create(@RequestBody CreateUserProjectResource request) {
-        return mapper.toResource(service.create(mapper.toModel(request)));
+        return mapper.toResource(service.create(request.getUserId() ,mapper.toModel(request)));
     }
 
     @PutMapping("{Id}")

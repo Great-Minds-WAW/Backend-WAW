@@ -24,4 +24,7 @@ public class CreateOfferResource {
 
     @NotNull
     private Boolean status;
+
+    @NotNull
+    private Long companyId;
 }

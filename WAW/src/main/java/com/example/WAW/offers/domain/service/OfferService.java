@@ -9,8 +9,7 @@ public interface OfferService {
 
     List<Offer> getAll();
     Offer getById(Long offerId);
-    Offer create(Offer request);
+    Offer create(Long companyId ,Offer request);
     Offer update(Long offerId, Offer request);
     ResponseEntity<?> delete(Long offerId);
-
 }

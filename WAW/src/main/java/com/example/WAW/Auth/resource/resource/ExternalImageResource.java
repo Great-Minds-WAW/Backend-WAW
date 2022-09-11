@@ -9,4 +9,5 @@ public class ExternalImageResource {
     private Long id;
     private String href;
     private String alt;
+    private Long userId;
 }

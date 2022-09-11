@@ -15,4 +15,5 @@ public class UserExperienceResource {
     private Date endDate;
     private String timeDiff;
     private String description;
+    private Long userId;
 }

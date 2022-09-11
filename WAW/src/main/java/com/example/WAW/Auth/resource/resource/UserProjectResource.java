@@ -12,4 +12,5 @@ public class UserProjectResource {
     private String title;
     private String summary;
     private Date date;
+    private Long userId;
 }

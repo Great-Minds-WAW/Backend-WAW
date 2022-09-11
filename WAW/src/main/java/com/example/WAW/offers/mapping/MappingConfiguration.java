@@ -9,4 +9,9 @@ public class MappingConfiguration {
     public OfferMapper offerMapper(){
         return new OfferMapper();
     }
+
+    @Bean
+    public PetitionMapper petitionMapper(){
+        return new PetitionMapper();
+    }
 }

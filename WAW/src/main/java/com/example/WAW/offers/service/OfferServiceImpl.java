@@ -1,5 +1,6 @@
 package com.example.WAW.offers.service;
 
+import com.example.WAW.Company.domain.persistence.CompanyRepository;
 import com.example.WAW.offers.domain.model.entity.Offer;
 import com.example.WAW.offers.domain.persistence.OfferRepository;
 import com.example.WAW.offers.domain.service.OfferService;
@@ -18,10 +19,12 @@ public class OfferServiceImpl implements OfferService {
 
     private static final String ENTITY = "Offer";
     private final OfferRepository offerRepository;
+    private final CompanyRepository companyRepository;
     private final Validator validator;
 
-    public OfferServiceImpl(OfferRepository offerRepository, Validator validator) {
+    public OfferServiceImpl(OfferRepository offerRepository, CompanyRepository companyRepository, Validator validator) {
         this.offerRepository = offerRepository;
+        this.companyRepository = companyRepository;
         this.validator = validator;
     }
 
@@ -37,12 +40,15 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public Offer create(Offer request) {
+    public Offer create(Long companyId,Offer request) {
         Set<ConstraintViolation<Offer>> violations = validator.validate(request);
+
         if (!violations.isEmpty())
             throw new ResourceValidationException(ENTITY, violations);
-
-        return offerRepository.save(request);
+        return companyRepository.findById(companyId).map(company -> {
+            request.setCompany(company);
+            return offerRepository.save(request);
+        }).orElseThrow(()->new ResourceNotFoundException("Company",companyId));
     }
 
     @Override
