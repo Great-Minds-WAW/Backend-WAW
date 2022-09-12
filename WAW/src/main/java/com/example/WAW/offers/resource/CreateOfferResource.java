@@ -26,5 +26,8 @@ public class CreateOfferResource {
     private Boolean status;
 
     @NotNull
+    private Integer necessaryExperience;
+
+    @NotNull
     private Long companyId;
 }

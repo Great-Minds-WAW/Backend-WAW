@@ -39,6 +39,9 @@ public class Offer extends AuditModel {
     @NotNull
     private Boolean status;
 
+    @NotNull
+    private Integer necessaryExperience;
+
     @OneToMany
     private List<Petition> petitions;
 

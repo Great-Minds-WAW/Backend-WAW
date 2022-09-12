@@ -13,4 +13,5 @@ public class OfferResource {
     private String salaryRange;
     private Boolean status;
     private Long companyId;
+    private Integer necessaryExperience;
 }
