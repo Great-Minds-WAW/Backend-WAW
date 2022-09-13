@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface UserExperienceService {
     List<UserExperience> getAll();
+    List<UserExperience> getAllByUserId(Long userId);
     UserExperience getById(Long id);
     UserExperience create(Long userId, UserExperience request);
     UserExperience update(Long id, UserExperience request);

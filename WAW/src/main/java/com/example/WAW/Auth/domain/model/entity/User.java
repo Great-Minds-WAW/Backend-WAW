@@ -67,6 +67,7 @@ public class User extends AuditModel {
     @OneToMany
     private List<Message> messages;
 
-    @OneToMany List<Petition> petitions;
+    @OneToMany
+    private List<Petition> petitions;
 
 }

@@ -34,6 +34,11 @@ public class UserEducationServiceImpl implements UserEducationService {
     }
 
     @Override
+    public List<UserEducation> getAllByUserId(Long userId) {
+        return repository.findAllByUserId(userId);
+    }
+
+    @Override
     public UserEducation getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException(ENTITY, id));

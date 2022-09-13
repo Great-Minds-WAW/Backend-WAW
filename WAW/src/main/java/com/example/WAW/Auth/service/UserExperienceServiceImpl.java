@@ -35,6 +35,11 @@ public class UserExperienceServiceImpl implements UserExperienceService {
     }
 
     @Override
+    public List<UserExperience> getAllByUserId(Long userId) {
+        return repository.findAllByUserId(userId);
+    }
+
+    @Override
     public UserExperience getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException(ENTITY, id));

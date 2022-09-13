@@ -1,13 +1,15 @@
 package com.example.WAW.offers.service;
 
 
+import com.example.WAW.Auth.domain.model.entity.User;
 import com.example.WAW.Auth.domain.model.entity.UserExperience;
-import com.example.WAW.Auth.domain.persistence.UserEducationRepository;
-import com.example.WAW.Auth.domain.persistence.UserExperienceRepository;
-import com.example.WAW.Auth.domain.persistence.UserRepository;
+import com.example.WAW.Auth.domain.service.UserEducationService;
+import com.example.WAW.Auth.domain.service.UserExperienceService;
+import com.example.WAW.Auth.domain.service.UserService;
+import com.example.WAW.offers.domain.model.entity.Offer;
 import com.example.WAW.offers.domain.model.entity.Petition;
-import com.example.WAW.offers.domain.persistence.OfferRepository;
 import com.example.WAW.offers.domain.persistence.PetitionRepository;
+import com.example.WAW.offers.domain.service.OfferService;
 import com.example.WAW.offers.domain.service.PetitionService;
 import com.example.WAW.shared.exception.ResourceAlreadyExistsException;
 import com.example.WAW.shared.exception.ResourceNotEnoughException;
@@ -27,20 +29,21 @@ public class PetitionServiceImpl implements PetitionService {
 
     private static final String ENTITY="Petition";
     private final PetitionRepository repository;
-    private final UserRepository userRepository;
-    private final UserEducationRepository userEducationRepository;
-    private final UserExperienceRepository userExperienceRepository;
-    private final OfferRepository offerRepository;
+    private final UserService userService;
+    private final UserEducationService userEducationService;
+    private final UserExperienceService userExperienceService;
+    private final OfferService offerService;
     private final Validator validator;
 
-    public PetitionServiceImpl(PetitionRepository repository, UserRepository userRepository, UserEducationRepository userEducationRepository, UserExperienceRepository userExperienceRepository, OfferRepository offerRepository, Validator validator) {
+    public PetitionServiceImpl(PetitionRepository repository, UserService userService, UserEducationService userEducationService, UserExperienceService userExperienceService, OfferService offerService, Validator validator) {
         this.repository = repository;
-        this.userRepository = userRepository;
-        this.userEducationRepository = userEducationRepository;
-        this.userExperienceRepository = userExperienceRepository;
-        this.offerRepository = offerRepository;
+        this.userService = userService;
+        this.userEducationService = userEducationService;
+        this.userExperienceService = userExperienceService;
+        this.offerService = offerService;
         this.validator = validator;
     }
+
 
     @Override
     public List<Petition> getAll() {
@@ -59,11 +62,13 @@ public class PetitionServiceImpl implements PetitionService {
     }
 
     public Long getUserExperience(Long userId){
-        List<UserExperience> experiences = userExperienceRepository.findAllByUserId(userId);
+        List<UserExperience> experiences = userExperienceService.getAllByUserId(userId);
 
-        if (experiences.isEmpty())
+        if (experiences.isEmpty()) {
             throw new ResourceNotFoundException("This user don't have none experience register");
+        }
         Long totalExperience = 0L;
+
         for (UserExperience experience: experiences){
             totalExperience += experience.getEndDate().getTime() - experience.getStartDate().getTime();
         }
@@ -80,24 +85,22 @@ public class PetitionServiceImpl implements PetitionService {
         if (!violations.isEmpty())
             throw new ResourceValidationException(ENTITY, violations);
 
-        return userRepository.findById(userId).map(user -> {
-            request.setUser(user);
-            return offerRepository.findById(offerId).map(offer -> {
-                request.setOffer(offer);
+        User user = userService.getById(userId);
+        Offer offer = offerService.getById(offerId);
 
-                if(getByOfferIdAndUserId(userId, offerId) != null)
-                    throw  new ResourceAlreadyExistsException("This Petition Already Exist");
+        request.setUser(user);
+        request.setOffer(offer);
 
-                if(userEducationRepository.findAllByUserId(userId).isEmpty())
-                    throw new ResourceNotFoundException("This user don't have none education register");
+        if(getByOfferIdAndUserId(userId, offerId) != null)
+            throw  new ResourceAlreadyExistsException("This Petition Already Exist");
 
-                if(offer.getNecessaryExperience()!=0)
-                    if (offer.getNecessaryExperience()>getUserExperience(userId))
-                        throw new ResourceNotEnoughException("this user don't have enough experience");
+        if(userEducationService.getAllByUserId(userId).isEmpty())
+            throw new ResourceNotFoundException("This user don't have none education register");
 
-                return repository.save(request);
-            }).orElseThrow(()->new ResourceNotFoundException("Offer", offerId));
-        }).orElseThrow(()-> new ResourceNotFoundException("User", userId));
+        if(offer.getNecessaryExperience()!=0)
+            if (offer.getNecessaryExperience()>getUserExperience(userId))
+                throw new ResourceNotEnoughException("this user don't have enough experience");
+        return repository.save(request);
     }
 
     @Override
