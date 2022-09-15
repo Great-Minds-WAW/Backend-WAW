@@ -58,10 +58,22 @@ public class PetitionServiceImpl implements PetitionService {
 
     @Override
     public Petition getByOfferIdAndUserId(Long userId, Long offerId) {
+        if (userService.getById(userId)==null){
+            throw new ResourceNotFoundException("User", userId);
+        }
+        if (offerService.getById(offerId)==null){
+            throw new ResourceNotFoundException("Offer",offerId);
+        }
         return repository.findByUserIdAndOfferId(userId, offerId);
     }
 
+    @Override
     public Long getUserExperience(Long userId){
+
+        if (userService.getById(userId)==null){
+            throw new ResourceNotFoundException("User", userId);
+        }
+
         List<UserExperience> experiences = userExperienceService.getAllByUserId(userId);
 
         if (experiences.isEmpty()) {

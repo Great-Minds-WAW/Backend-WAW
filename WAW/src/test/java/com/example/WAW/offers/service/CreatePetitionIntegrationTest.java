@@ -4,14 +4,22 @@ import com.example.WAW.Auth.domain.model.entity.User;
 import com.example.WAW.Auth.domain.model.entity.UserEducation;
 import com.example.WAW.Auth.domain.model.entity.UserExperience;
 import com.example.WAW.Auth.domain.model.entity.UserProject;
+import com.example.WAW.Auth.domain.persistence.UserEducationRepository;
+import com.example.WAW.Auth.domain.persistence.UserExperienceRepository;
+import com.example.WAW.Auth.domain.persistence.UserRepository;
 import com.example.WAW.Auth.domain.service.UserEducationService;
 import com.example.WAW.Auth.domain.service.UserExperienceService;
 import com.example.WAW.Auth.domain.service.UserService;
+import com.example.WAW.Auth.service.UserEducationServiceImpl;
+import com.example.WAW.Auth.service.UserExperienceServiceImpl;
+import com.example.WAW.Auth.service.UserServiceImpl;
 import com.example.WAW.Chat.domain.model.entity.ChatRoom;
 import com.example.WAW.Chat.domain.model.entity.Message;
 import com.example.WAW.Company.domain.model.entity.Company;
+import com.example.WAW.Company.domain.persistence.CompanyRepository;
 import com.example.WAW.offers.domain.model.entity.Offer;
 import com.example.WAW.offers.domain.model.entity.Petition;
+import com.example.WAW.offers.domain.persistence.OfferRepository;
 import com.example.WAW.offers.domain.persistence.PetitionRepository;
 import com.example.WAW.offers.domain.service.OfferService;
 import com.example.WAW.offers.domain.service.PetitionService;
@@ -33,31 +41,48 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
-class PetitionServiceImplTest {
+class CreatePetitionIntegrationTest {
 
+    //Validador//
     Validator validator = mock(Validator.class);
 
-    @Mock
-    PetitionRepository repository = mock(PetitionRepository.class);
 
+    /*Repositories*/
     @Mock
-    UserEducationService userEducationService = mock(UserEducationService.class);
-
+    PetitionRepository petitionRepository = mock(PetitionRepository.class);
     @Mock
-    UserExperienceService userExperienceService = mock(UserExperienceService.class);
-
+    UserEducationRepository userEducationRepository = mock(UserEducationRepository.class);
     @Mock
-    UserService userService = mock(UserService.class);
-
+    UserExperienceRepository userExperienceRepository = mock(UserExperienceRepository.class);
     @Mock
-    OfferService offerService = mock(OfferService.class);
+    UserRepository userRepository = mock(UserRepository.class);
+    @Mock
+    OfferRepository offerRepository = mock(OfferRepository.class);
+    @Mock
+    CompanyRepository companyRepository = mock(CompanyRepository.class);
 
+
+    /*Services*/
+    @InjectMocks
+    UserEducationService userEducationService = new UserEducationServiceImpl(
+            userEducationRepository,userRepository,validator);
+    @InjectMocks
+    UserExperienceService userExperienceService = new UserExperienceServiceImpl(
+            userExperienceRepository, userRepository, validator);
+    @InjectMocks
+    UserService userService = new UserServiceImpl(
+            userRepository, validator);
+    @InjectMocks
+    OfferService offerService = new OfferServiceImpl(
+            offerRepository, companyRepository, validator);
     @InjectMocks
     PetitionService petitionService = new PetitionServiceImpl(
-            repository, userService, userEducationService, userExperienceService, offerService, validator
-    );
+            petitionRepository, userService, userEducationService, userExperienceService, offerService, validator);
 
+
+    /*Generators*/
     Date generateDate(String dateStr) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         Date date = format.parse(dateStr);
@@ -85,7 +110,6 @@ class PetitionServiceImplTest {
 
         return  user;
     }
-
     Company createCompany(){
 
         List<Offer> offers = new ArrayList<>();
@@ -95,7 +119,6 @@ class PetitionServiceImplTest {
 
         return company;
     }
-
     Offer createOffer(){
 
         Company company = createCompany();
@@ -107,20 +130,17 @@ class PetitionServiceImplTest {
 
         return offer;
     }
-
     Petition createPetition(){
         Petition petition = new Petition(1L,"pendiente", null, null);
 
         return petition;
     }
-
     UserEducation createUserEducation(){
         UserEducation userEducation = new UserEducation(
                 1L,"UPC","description",2019,2024,null,null);
 
         return userEducation;
     }
-
     UserExperience createUserExperience(String start, String end) throws ParseException {
 
         Date startDate = generateDate(start);
@@ -131,6 +151,9 @@ class PetitionServiceImplTest {
 
         return userExperience;
     }
+
+
+    /*Integration Test*/
 
     /*
         Happy path: The User generate request correctly
@@ -162,11 +185,11 @@ class PetitionServiceImplTest {
         educations.add(education);
         experiences.add(experience);
 
-        when(userService.getById(1L)).thenReturn(user);
-        when(offerService.getById(1L)).thenReturn(offer);
-        when(userEducationService.getAllByUserId(1L)).thenReturn(educations);
-        when(userExperienceService.getAllByUserId(1L)).thenReturn(experiences);
-        when(repository.save(petition)).thenReturn(petition);
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
+        when(offerRepository.findById(1L)).thenReturn(Optional.ofNullable(offer));
+        when(userEducationRepository.findAllByUserId(1L)).thenReturn(educations);
+        when(userExperienceRepository.findAllByUserId(1L)).thenReturn(experiences);
+        when(petitionRepository.save(petition)).thenReturn(petition);
 
         Petition result = petitionService.create(1L,1L,petition);
 
@@ -201,11 +224,11 @@ class PetitionServiceImplTest {
 
         experiences.add(experience);
 
-        when(userService.getById(1L)).thenReturn(user);
-        when(offerService.getById(1L)).thenReturn(offer);
-        when(userEducationService.getAllByUserId(1L)).thenReturn(educations);
-        when(userExperienceService.getAllByUserId(1L)).thenReturn(experiences);
-        when(repository.save(petition)).thenReturn(petition);
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
+        when(offerRepository.findById(1L)).thenReturn(Optional.ofNullable(offer));
+        when(userEducationRepository.findAllByUserId(1L)).thenReturn(educations);
+        when(userExperienceRepository.findAllByUserId(1L)).thenReturn(experiences);
+        when(petitionRepository.save(petition)).thenReturn(petition);
 
         Assertions.assertThrows(ResourceNotFoundException.class, ()->{
             petitionService.create(1L,1L,petition);
@@ -238,11 +261,11 @@ class PetitionServiceImplTest {
 
         educations.add(education);
 
-        when(userService.getById(1L)).thenReturn(user);
-        when(offerService.getById(1L)).thenReturn(offer);
-        when(userEducationService.getAllByUserId(1L)).thenReturn(educations);
-        when(userExperienceService.getAllByUserId(1L)).thenReturn(experiences);
-        when(repository.save(petition)).thenReturn(petition);
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
+        when(offerRepository.findById(1L)).thenReturn(Optional.ofNullable(offer));
+        when(userEducationRepository.findAllByUserId(1L)).thenReturn(educations);
+        when(userExperienceRepository.findAllByUserId(1L)).thenReturn(experiences);
+        when(petitionRepository.save(petition)).thenReturn(petition);
 
         Assertions.assertThrows(ResourceNotFoundException.class, ()->{
             petitionService.create(1L,1L,petition);
@@ -279,11 +302,11 @@ class PetitionServiceImplTest {
         educations.add(education);
         experiences.add(experience);
 
-        when(userService.getById(1L)).thenReturn(user);
-        when(offerService.getById(1L)).thenReturn(offer);
-        when(userEducationService.getAllByUserId(1L)).thenReturn(educations);
-        when(userExperienceService.getAllByUserId(1L)).thenReturn(experiences);
-        when(repository.save(petition)).thenReturn(petition);
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
+        when(offerRepository.findById(1L)).thenReturn(Optional.ofNullable(offer));
+        when(userEducationRepository.findAllByUserId(1L)).thenReturn(educations);
+        when(userExperienceRepository.findAllByUserId(1L)).thenReturn(experiences);
+        when(petitionRepository.save(petition)).thenReturn(petition);
 
         Assertions.assertThrows(ResourceNotEnoughException.class, ()->{
             petitionService.create(1L,1L,petition);
@@ -319,12 +342,12 @@ class PetitionServiceImplTest {
         educations.add(education);
         experiences.add(experience);
 
-        when(userService.getById(1L)).thenReturn(user);
-        when(offerService.getById(1L)).thenReturn(offer);
-        when(userEducationService.getAllByUserId(1L)).thenReturn(educations);
-        when(userExperienceService.getAllByUserId(1L)).thenReturn(experiences);
-        when(repository.save(petition)).thenReturn(petition);
-        when(repository.findByUserIdAndOfferId(1L,1L)).thenReturn(petition);
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
+        when(offerRepository.findById(1L)).thenReturn(Optional.ofNullable(offer));
+        when(userEducationRepository.findAllByUserId(1L)).thenReturn(educations);
+        when(userExperienceRepository.findAllByUserId(1L)).thenReturn(experiences);
+        when(petitionRepository.findByUserIdAndOfferId(1L,1L)).thenReturn(petition);
+        when(petitionRepository.save(petition)).thenReturn(petition);
 
         Assertions.assertThrows(ResourceAlreadyExistsException.class, ()->{
             petitionService.create(1L,1L,petition);
