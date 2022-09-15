@@ -10,10 +10,7 @@ import com.example.WAW.Auth.domain.service.UserEducationService;
 import com.example.WAW.Auth.service.UserEducationServiceImpl;
 import com.example.WAW.Chat.domain.model.entity.ChatRoom;
 import com.example.WAW.Chat.domain.model.entity.Message;
-import com.example.WAW.Company.domain.model.entity.Company;
-import com.example.WAW.offers.domain.model.entity.Offer;
 import com.example.WAW.offers.domain.model.entity.Petition;
-import com.example.WAW.shared.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,7 +27,7 @@ import java.util.List;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GetAllByUserIdUnitTest {
+public class GetAllEducationByUserIdUnitTest {
 
     Validator validator = mock(Validator.class);
 
@@ -102,6 +99,6 @@ public class GetAllByUserIdUnitTest {
 
         List<UserEducation> result = userEducationService.getAllByUserId(1L);
 
-        Assertions.assertEquals(true, result.isEmpty());
+        Assertions.assertTrue(result.isEmpty());
     }
 }
