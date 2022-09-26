@@ -22,8 +22,9 @@ logging:
 #        dialect: org.hibernate.dialect.PostgreSQLDialect
 spring:
   datasource:
+    driver-class-name: org.postgresql.Driver
     password: aa5992095be8c68e32af26b5d4982081476b12832db24067ef264ddbcb20e924
-    url: postgres://pelredfoioyzwd:aa5992095be8c68e32af26b5d4982081476b12832db24067ef264ddbcb20e924@ec2-54-147-36-107.compute-1.amazonaws.com:5432/da9pa4v9dhd43o
+    url: jdbc:postgresql://pelredfoioyzwd:aa5992095be8c68e32af26b5d4982081476b12832db24067ef264ddbcb20e924@ec2-54-147-36-107.compute-1.amazonaws.com:5432/da9pa4v9dhd43o
     username: pelredfoioyzwd
   jpa:
     hibernate:
